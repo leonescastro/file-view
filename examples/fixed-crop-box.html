@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Cropper.js</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../dist/cropper.css">
+  <style>
+    .container {
+      max-width: 640px;
+      margin: 20px auto;
+    }
+
+    img {
+      max-width: 100%;
+    }
+
+    .toolbar {
+      position:absolute;
+      z-index:2015;
+      background-color:rgba(0,0,0,0.5);
+      color:#fff
+    }
+
+    .toolbar__top {
+      top:0;
+      width:auto;
+      height:32px;
+      left: 40%;
+    }
+
+    .toolbar__bottom {
+      width:auto;
+      height:32px;
+      left: 42%;
+      bottom: 0;
+    }
+
+    .toolbar__left {
+      top:0;
+      left: -32px;
+      width:32px;
+      height:auto;
+    }
+
+    .toolbar__button {
+      float:left;
+      display:block;
+      width:32px;
+      height:32px;
+      border-width:0;
+      font-size:14px;
+      text-align:center;
+      background-color:transparent;
+      color:#fff;
+      cursor:pointer
+    }
+
+    .toolbar__button:focus {
+      outline:none
+    }
+    
+    .toolbar__button:hover {
+      background-color:#0074d9;
+      color:#fff
+    }
+
+    .toolbar__button__left {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translate(0%,-50%);
+      -ms-transform: translate(-0%,-50%);
+    }
+
+    .toolbar__nav {
+      position:absolute;
+      top: 50%;
+      transform: translate(0%,-50%);
+      -ms-transform: translate(-0%,-50%);
+      z-index:2015;
+      background-color:rgba(0,0,0,0.5);
+      color:#fff;
+    }
+
+    .toolbar__nav__left {
+      left: 0;
+    }
+
+    .toolbar__nav__right {
+      right: 0%;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Cropper with fixed crop box</h1>
+    <div style="position: relative">
+      <img id="image" src="../docs/images/picture.jpg" alt="Picture">
+      <div class="toolbar toolbar__top" >
+        <button class="toolbar__button" style="display: none" onclick="cropper.crop()" > 
+          <span class="docs-tooltip" data-toggle="tooltip" title="cropper.crop()">
+            <span class="fa fa-crop"></span>    
+          </span>
+        </button>
+        <button class="toolbar__button" style="display: none" onclick="cropper.clear()" > 
+          <span class="docs-tooltip" data-toggle="tooltip" title="cropper.zoom(-0.1)">
+            <span class="fa fa-remove"></span>
+          </span>
+        </button>
+        <button class="toolbar__button" onclick="cropper.zoom(0.1)" > 
+          <span class="docs-tooltip" data-toggle="tooltip" title="cropper.zoom(0.1)">
+            <span class="fa fa-search-plus"></span>
+          </span>
+        </button>
+        <button class="toolbar__button" onclick="cropper.zoom(-0.1)" > 
+          <span class="docs-tooltip" data-toggle="tooltip" title="cropper.zoom(-0.1)">
+            <span class="fa fa-search-minus"></span>
+          </span>
+        </button> 
+        <button class="toolbar__button" onclick="cropper.rotate(-90)" > 
+          <span class="docs-tooltip" data-toggle="tooltip" title="cropper.rotate(-90)">
+            <span class="fa fa-rotate-left"></span>
+          </span>
+        </button> 
+        <button class="toolbar__button" onclick="cropper.rotate(90)" > 
+          <span class="docs-tooltip" data-toggle="tooltip" title="cropper.rotate(90)">
+            <span class="fa fa-rotate-right"></span>
+          </span>
+        </button> 
+        <button class="toolbar__button " onclick="cropper.reset()" > 
+          <span class="docs-tooltip" data-toggle="tooltip" title="cropper.reset()">
+            <span class="fa fa-refresh"></span>
+          </span>
+        </button>
+      </div>  
+      <div class="toolbar__nav toolbar__nav__left" >  
+        <button class="toolbar__button" onclick="anterior()" > 
+          <span class="fa fa-chevron-left"></span>
+        </button>
+      </div>
+      <div class="toolbar__nav toolbar__nav__right" >  
+        <button class="toolbar__button " onclick="proxima()" > 
+          <span class="fa fa-chevron-right"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="../dist/cropper.js"></script>
+  <script>
+    cropper = null;
+    window.addEventListener('DOMContentLoaded', function () {
+      var image = document.querySelector('#image');
+      cropper = new Cropper(image, {
+            dragMode: 'move',
+            autoCrop: false,
+            viewMode: 0,
+            restore: false,
+            guides: true,
+            center: true,
+            highlight: false,
+            cropBoxMovable: true,
+            cropBoxResizable: true,
+            zoomOnWheel: false
+        });
+      
+    });
+
+    function anterior(){
+      var image = document.querySelector('#image');
+      image.src = files.getPrevImage();
+      console.log(image.src);
+      mostrar(image);
+    }
+
+    function proxima(){
+      var image = document.querySelector('#image');
+      image.src = files.getNextImage();
+      console.log(image.src);
+      mostrar(image);
+    }
+
+    function mostrar(image){
+      cropper.destroy();
+      cropper = new Cropper(image, {
+          dragMode: 'move',
+          autoCrop: false,
+          viewMode: 0,
+          restore: false,
+          guides: true,
+          center: true,
+          highlight: false,
+          cropBoxMovable: true,
+          cropBoxResizable: true
+      });
+    }    
+
+    var files = {
+      ix: 0,
+      src: [
+        '../docs/images/picture.jpg',
+        '../docs/images/picture-2.jpg',
+        '../docs/images/picture-3.jpg'
+      ],
+      getNextImage: function(){
+        console.log('ix: ' + this.ix + ' - length: ' + this.src.length);
+        if(this.ix++ >= this.src.length-1) this.ix = 0;
+        console.log('ix: ' + this.ix + ' - length: ' + this.src.length);
+        return this.src[this.ix];
+      },
+
+      getPrevImage: function(){
+        console.log('ix: ' + this.ix + ' - length: ' + this.src.length);
+        if(this.ix-- <= 0) this.ix = this.src.length-1;
+        console.log('ix: ' + this.ix + ' - length: ' + this.src.length);
+        return this.src[this.ix];
+      }
+    }
+  </script>
+</body>
+</html>
